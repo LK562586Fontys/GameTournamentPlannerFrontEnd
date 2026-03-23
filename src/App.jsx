@@ -19,7 +19,11 @@ function App() {
       <h1>game tournament planner</h1>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+          count is {count} {count} {count} {count}
+        </button>
+
+        <button onClick={sendTestTournament}>
+          Send Test Tournament
         </button>
         <p>
           Edit <code>src/App.jsx</code> and save to test HMR
@@ -31,5 +35,29 @@ function App() {
     </>
   )
 }
+
+const sendTestTournament = async () => {
+console.log("Button clicked");
+
+  try {
+    const response = await fetch("http://localhost:8080/api/tournaments", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        gameId: 218,
+        name: "test tournement",
+        maxParticipants: 56,
+        rules: "chicken"
+      })
+    });
+
+    const data = await response.json();
+    console.log("Created tournament:", data);
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
 
 export default App
