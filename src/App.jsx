@@ -7,6 +7,11 @@ function App() {
   const [count, setCount] = useState(0)
   const [tournaments, setTournaments] = useState([])
 
+  const [tournamentName, setTournamentName] = useState('')
+  const [tournamentRules, setTournamentRules] = useState('')
+  const [gameId, setGameId] = useState('')
+  const [maxParticipants, setMaxParticipants] = useState('')
+
   useEffect(() => {
     fetch("http://localhost:8080/api/tournaments")
       .then((response) => response.json())
@@ -16,6 +21,35 @@ function App() {
       })
       .catch((error) => console.error("Error fetching tournaments:", error))
   }, [])
+
+  const sendTestTournament = async () => {
+    console.log("Button clicked");
+
+    try {
+      const response = await fetch("http://localhost:8080/api/tournaments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          gameId: Number(gameId),
+          name: tournamentName,
+          maxParticipants: Number(maxParticipants),
+          rules: tournamentRules
+        })
+      });
+
+      setTournamentName('')
+      setTournamentRules('')
+      setGameId('')
+      setMaxParticipants('')
+
+      const data = await response.json();
+      console.log("Created tournament:", data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   return (
     <>
@@ -35,7 +69,48 @@ function App() {
           count is {count}
         </button>
 
-        <button onClick={sendTestTournament}>Send Test Tournament</button>
+        <h2>Create Tournament</h2>
+      <div className="card">
+        <input
+          type="text"
+          placeholder="Tournament name"
+          value={tournamentName}
+          onChange={(e) => setTournamentName(e.target.value)}
+        />
+
+        <br />
+
+        <input
+          type="text"
+          placeholder="Rules"
+          value={tournamentRules}
+          onChange={(e) => setTournamentRules(e.target.value)}
+        />
+
+        <br />
+
+        <input
+          type="number"
+          placeholder="Game ID"
+          value={gameId}
+          onChange={(e) => setGameId(e.target.value)}
+        />
+
+        <br />
+
+        <input
+          type="number"
+          placeholder="Max participants"
+          value={maxParticipants}
+          onChange={(e) => setMaxParticipants(e.target.value)}
+        />
+
+        <br />
+
+        <button onClick={sendTestTournament}>
+          Create Tournament
+        </button>
+      </div>
 
         <p>
           Edit <code>src/App.jsx</code> and save to test HMR
@@ -62,29 +137,5 @@ function App() {
     </>
   )
 }
-
-const sendTestTournament = async () => {
-console.log("Button clicked");
-
-  try {
-    const response = await fetch("http://localhost:8080/api/tournaments", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        gameId: 218,
-        name: "clash royale tournament",
-        maxParticipants: 64,
-        rules: "Do not use mega knight"
-      })
-    });
-
-    const data = await response.json();
-    console.log("Created tournament:", data);
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
 
 export default App
