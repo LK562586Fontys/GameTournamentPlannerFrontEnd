@@ -25,6 +25,21 @@ function App() {
   const sendTestTournament = async () => {
     console.log("Button clicked");
 
+    if (!tournamentName || !tournamentRules || !gameId || !maxParticipants) {
+      alert("Please fill in all fields before creating a tournament.");
+      return;
+    }
+
+    if (isNaN(gameId) || isNaN(maxParticipants)) {
+      alert("Game ID and Max Participants must be valid numbers.");
+      return;
+    }
+
+    if (Number(maxParticipants) <= 0 || Math.log2(Number(maxParticipants)) % 1 !== 0) {
+      alert("Max participants must be a positive power of 2.");
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:8080/api/tournaments", {
         method: "POST",
