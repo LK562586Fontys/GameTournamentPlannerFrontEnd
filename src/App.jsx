@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
@@ -13,7 +11,7 @@ function App() {
   const [maxParticipants, setMaxParticipants] = useState('')
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/tournaments")
+    fetch("http://localhost:8081/api/tournaments")
       .then((response) => response.json())
       .then((data) => {
         console.log("Fetched tournaments:", data)
@@ -30,7 +28,7 @@ function App() {
       return;
     }
 
-    if (isNaN(gameId) || isNaN(maxParticipants)) {
+    if (Number.isNaN(Number(gameId)) || Number.isNaN(Number(maxParticipants))) {
       alert("Game ID and Max Participants must be valid numbers.");
       return;
     }
@@ -41,7 +39,7 @@ function App() {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/tournaments", {
+      const response = await fetch("http://localhost:8081/api/tournaments", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -68,14 +66,6 @@ function App() {
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
 
       <h1>game tournament planner</h1>
 
