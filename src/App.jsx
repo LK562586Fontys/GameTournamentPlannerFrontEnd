@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import './App.css'
 
 function App() {
@@ -9,6 +10,22 @@ function App() {
   const [tournamentRules, setTournamentRules] = useState('')
   const [gameId, setGameId] = useState('')
   const [maxParticipants, setMaxParticipants] = useState('')
+  const [gameSearch, setGameSearch] = useState('')
+  const [gameResults, setGameResults] = useState([])
+  const [selectedGame, setSelectedGame] = useState(null)
+  const searchGames = async (query) => {
+  if (!query) return;
+
+  try {
+    const res = await fetch(
+      `https://api.rawg.io/api/games?key=2e4d67e3eaea4cab87c6b089721bb288&search=${query}`
+    );
+    const data = await res.json();
+    setGameResults(data.results);
+  } catch (err) {
+    console.error("RAWG error:", err);
+  }
+  };
 
   useEffect(() => {
     fetch("http://localhost:8081/api/tournaments")
@@ -23,7 +40,7 @@ function App() {
   const sendTestTournament = async () => {
     console.log("Button clicked");
 
-    if (!tournamentName || !tournamentRules || !gameId || !maxParticipants) {
+    if (!tournamentName || !tournamentRules || !selectedGame || !maxParticipants) {
       alert("Please fill in all fields before creating a tournament.");
       return;
     }
@@ -95,12 +112,33 @@ function App() {
         <br />
 
         <input
-          type="number"
-          placeholder="Game ID"
-          value={gameId}
-          onChange={(e) => setGameId(e.target.value)}
+          type="text"
+          placeholder="Search game..."
+          value={gameSearch}
+          onChange={(e) => {
+            const value = e.target.value;
+            setGameSearch(value);
+            searchGames(value);
+          }}
         />
 
+        <ul>
+          {gameResults.map((game) => (
+           <li key={game.id}>
+             <button
+               onClick={() => {
+                 setSelectedGame(game);
+                  setGameId(game.id);
+                 setGameSearch(game.name);
+                  setGameResults([]);
+                 }}
+                style={{ cursor: "pointer" }}
+             >
+                {game.name}
+             </button>
+            </li>
+          ))}
+        </ul>  
         <br />
 
         <input
@@ -123,18 +161,13 @@ function App() {
       </div>
 
       <h2>Tournaments</h2>
+        {tournaments.map((tournament, index) => (
+          <TournamentItem
+            key={tournament.id ?? index}
+            tournament={tournament}
+          />
+        ))}
 
-      {tournaments.length > 0 ? (
-        <ul>
-          {tournaments.map((tournament, index) => (
-            <li key={tournament.id ?? index}>
-              Name: {tournament.name} - Rules: {tournament.rules} - Maximum Participants: {tournament.maxParticipants}
-            </li>
-          ))}
-        </ul>
-      ) : (
-      <p>No tournaments found.</p>
-      )}
 
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
@@ -142,5 +175,52 @@ function App() {
     </>
   )
 }
+
+function TournamentItem({ tournament }) {
+  const [game, setGame] = useState(null);
+
+  useEffect(() => {
+    const fetchGame = async () => {
+      try {
+        const res = await fetch(
+          `https://api.rawg.io/api/games/${tournament.gameId}?key=2e4d67e3eaea4cab87c6b089721bb288`
+        );
+        const data = await res.json();
+        setGame(data);
+      } catch (err) {
+        console.error("Error fetching game:", err);
+      }
+    };
+
+    fetchGame();
+  }, [tournament.gameId]);
+
+  return (
+    <li>
+      <p>
+        Name: {tournament.name} - Rules: {tournament.rules} - Max: {tournament.maxParticipants}
+        {" - Game: "}
+        {game ? game.name : "Loading..."}
+      </p>
+
+      {game?.background_image && (
+        <img
+          src={game.background_image}
+          alt={game.name}
+          width="200"
+        />
+      )}
+    </li>
+  );
+}
+
+TournamentItem.propTypes = {
+  tournament: PropTypes.shape({
+    gameId: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    rules: PropTypes.string.isRequired,
+    maxParticipants: PropTypes.number.isRequired,
+  }).isRequired,
+};
 
 export default App
