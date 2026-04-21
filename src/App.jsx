@@ -84,7 +84,7 @@ function App() {
   return (
     <>
 
-      <h1>game tournament planner!</h1>
+      <h1>game tournament planner</h1>
 
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
