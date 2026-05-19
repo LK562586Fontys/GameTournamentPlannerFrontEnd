@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../index.css'
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -11,7 +12,7 @@ const Register = () => {
     setMessage('');
 
     try {
-      const response = await fetch('/api/register', {
+      const response = await fetch('http://localhost:8081/api/accounts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,7 +43,7 @@ const Register = () => {
 
   return (
     <div>
-      <h2>Register</h2>
+      <h2>Register A.U.B!!!</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="name">Name</label>
