@@ -31,7 +31,6 @@ jobs:
     - run: npm test
 
     - name: Run SonarQube analysis
-      working-directory: frontend
       run: |
         npx sonar-scanner \
           -Dsonar.host.url=$SONAR_HOST_URL \
