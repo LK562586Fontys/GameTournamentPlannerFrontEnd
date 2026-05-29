@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import '../index.css';
 
-import { validateRegister } from '../validators/registerValidator';
-import { registerUser } from '../services/authService';
+import { validateRegister } from '../Validators/registerValidator';
+import { registerUser } from '../Services/AuthService';
 
 function Register() {
   const [name, setName] = useState('');
