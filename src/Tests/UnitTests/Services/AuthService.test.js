@@ -17,7 +17,7 @@ describe('registerUser', () => {
             emailAddress: 'test@gmail.com'
         };
 
-        global.fetch = vi.fn(() =>
+        globalThis.fetch = vi.fn(() =>
             Promise.resolve({
                 ok: true,
                 json: () => Promise.resolve(mockResponse)
@@ -50,7 +50,7 @@ describe('registerUser', () => {
 
     it('should throw error when registration fails', async () => {
 
-        global.fetch = vi.fn(() =>
+        globalThis.fetch = vi.fn(() =>
             Promise.resolve({
                 ok: false,
                 json: () => Promise.resolve({
