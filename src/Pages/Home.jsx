@@ -1,214 +1,178 @@
-import { useEffect, useState } from "react"
-import PropTypes from 'prop-types'
-import './Home.css'
-import '../index.css'
+import { useEffect, useState } from 'react';
+
+import './Home.css';
+import '../index.css';
+
+import {
+  getTournaments,
+  createTournament,
+} from '../services/tournamentService';
+
+import { searchGames } from '../services/rawgService';
+
+import { validateTournament } from '../validators/tournamentValidator';
 
 function Home() {
-  const [tournaments, setTournaments] = useState([])
+  const [tournaments, setTournaments] = useState([]);
 
-  const [tournamentName, setTournamentName] = useState('')
-  const [tournamentRules, setTournamentRules] = useState('')
-  const [gameId, setGameId] = useState('')
-  const [maxParticipants, setMaxParticipants] = useState('')
-  const [gameSearch, setGameSearch] = useState('')
-  const [gameResults, setGameResults] = useState([])
-  const [selectedGame, setSelectedGame] = useState(null)
-  const searchGames = async (query) => {
-  if (!query) return;
+  const [tournamentName, setTournamentName] = useState('');
+  const [tournamentRules, setTournamentRules] = useState('');
+  const [gameId, setGameId] = useState('');
+  const [maxParticipants, setMaxParticipants] = useState('');
 
-  try {
-    const res = await fetch(
-      `https://api.rawg.io/api/games?key=2e4d67e3eaea4cab87c6b089721bb288&search=${query}`
-    );
-    const data = await res.json();
-    setGameResults(data.results);
-  } catch (err) {
-    console.error("RAWG error:", err);
-  }
-  };
+  const [gameSearch, setGameSearch] = useState('');
+  const [gameResults, setGameResults] = useState([]);
+  const [selectedGame, setSelectedGame] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:8081/api/tournaments")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Fetched tournaments:", data)
-        setTournaments(data)
-      })
-      .catch((error) => console.error("Error fetching tournaments:", error))
-  }, [])
-
-  const sendTestTournament = async () => {
-    console.log("Button clicked");
-
-    if (!tournamentName || !tournamentRules || !selectedGame || !maxParticipants) {
-      alert("Please fill in all fields before creating a tournament.");
-      return;
+    async function loadTournaments() {
+      try {
+        const data = await getTournaments();
+        setTournaments(data);
+      } catch (error) {
+        console.error('Error loading tournaments:', error);
+      }
     }
 
-    if (Number.isNaN(Number(gameId)) || Number.isNaN(Number(maxParticipants))) {
-      alert("Game ID and Max Participants must be valid numbers.");
-      return;
-    }
+    loadTournaments();
+  }, []);
 
-    if (Number(maxParticipants) <= 0 || Math.log2(Number(maxParticipants)) % 1 !== 0) {
-      alert("Max participants must be a positive power of 2.");
+  const handleGameSearch = async (query) => {
+    setGameSearch(query);
+
+    try {
+      const results = await searchGames(query);
+      setGameResults(results);
+    } catch (error) {
+      console.error('RAWG error:', error);
+    }
+  };
+
+  const handleSelectGame = (game) => {
+    setSelectedGame(game);
+    setGameId(game.id);
+    setGameSearch(game.name);
+    setGameResults([]);
+  };
+
+  const handleCreateTournament = async () => {
+    const tournamentData = {
+      gameId: Number(gameId),
+      name: tournamentName,
+      maxParticipants: Number(maxParticipants),
+      rules: tournamentRules,
+    };
+
+    const validationError = validateTournament(tournamentData);
+
+    if (validationError) {
+      alert(validationError);
       return;
     }
 
     try {
-      const response = await fetch("http://localhost:8081/api/tournaments", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          gameId: Number(gameId),
-          name: tournamentName,
-          maxParticipants: Number(maxParticipants),
-          rules: tournamentRules
-        })
-      });
+      const createdTournament = await createTournament(
+        tournamentData
+      );
 
-      setTournamentName('')
-      setTournamentRules('')
-      setGameId('')
-      setMaxParticipants('')
+      setTournaments((prev) => [
+        ...prev,
+        createdTournament,
+      ]);
 
-      const data = await response.json();
-      console.log("Created tournament:", data);
+      setTournamentName('');
+      setTournamentRules('');
+      setGameId('');
+      setMaxParticipants('');
+      setGameSearch('');
+      setSelectedGame(null);
+
     } catch (error) {
-      console.error("Error:", error);
+      console.error('Error creating tournament:', error);
+      alert(error.message);
     }
   };
-
   return (
-    <>
+  <div className="home-container">
+    <h1>Tournaments</h1>
 
-      <h1>game tournament planner</h1>
+    <div className="create-tournament-container">
+      <h2>Create Tournament</h2>
 
-      <div className="card">
+      <input
+        type="text"
+        placeholder="Tournament Name"
+        value={tournamentName}
+        onChange={(e) => setTournamentName(e.target.value)}
+      />
 
-        <h2>Create Tournament</h2>
-      <div className="card">
+      <textarea
+        placeholder="Tournament Rules"
+        value={tournamentRules}
+        onChange={(e) => setTournamentRules(e.target.value)}
+      />
+
+      <input
+        type="number"
+        placeholder="Max Participants"
+        value={maxParticipants}
+        onChange={(e) => setMaxParticipants(e.target.value)}
+      />
+
+      <div className="game-search-container">
         <input
           type="text"
-          placeholder="Tournament name"
-          value={tournamentName}
-          onChange={(e) => setTournamentName(e.target.value)}
-        />
-
-        <br />
-
-        <input
-          type="text"
-          placeholder="Rules"
-          value={tournamentRules}
-          onChange={(e) => setTournamentRules(e.target.value)}
-        />
-
-        <br />
-
-        <input
-          type="text"
-          placeholder="Search game..."
+          placeholder="Search Game"
           value={gameSearch}
-          onChange={(e) => {
-            const value = e.target.value;
-            setGameSearch(value);
-            searchGames(value);
-          }}
+          onChange={(e) => handleGameSearch(e.target.value)}
         />
 
-        <ul>
-          {gameResults.map((game) => (
-           <li key={game.id}>
-             <button
-               onClick={() => {
-                 setSelectedGame(game);
-                  setGameId(game.id);
-                 setGameSearch(game.name);
-                  setGameResults([]);
-                 }}
-                style={{ cursor: "pointer" }}
-             >
-                {game.name}
-             </button>
-            </li>
-          ))}
-        </ul>  
-        <br />
-
-        <input
-          type="number"
-          placeholder="Max participants"
-          value={maxParticipants}
-          onChange={(e) => setMaxParticipants(e.target.value)}
-        />
-
-        <br />
-
-        <button onClick={sendTestTournament}>
-          Create Tournament
-        </button>
-      </div>
+        {gameResults.length > 0 && (
+          <ul className="game-results">
+            {gameResults.map((game) => (
+              <li key={game.id} className="game-result-item">
+                <button
+                  type="button"
+                  onClick={() => handleSelectGame(game)}
+                  className="game-result-button"
+                >
+                  {game.name}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
-      <h2>Tournaments</h2>
-        {tournaments.map((tournament, index) => (
+      {selectedGame && (
+        <div className="selected-game">
+          <p>
+            Selected Game: <strong>{selectedGame.name}</strong>
+          </p>
+        </div>
+      )}
+
+      <button onClick={handleCreateTournament}>
+        Create Tournament
+      </button>
+    </div>
+
+    <div className="tournament-list">
+      <h2>Existing Tournaments</h2>
+
+      {tournaments.length === 0 ? (
+        <p>No tournaments found.</p>
+      ) : (
+        tournaments.map((tournament) => (
           <TournamentItem
-            key={tournament.id ?? index}
+            key={tournament.id}
             tournament={tournament}
           />
-        ))}
-    </>
-  )
-}
-
-function TournamentItem({ tournament }) {
-  const [game, setGame] = useState(null);
-
-  useEffect(() => {
-    const fetchGame = async () => {
-      try {
-        const res = await fetch(
-          `https://api.rawg.io/api/games/${tournament.gameId}?key=2e4d67e3eaea4cab87c6b089721bb288`
-        );
-        const data = await res.json();
-        setGame(data);
-      } catch (err) {
-        console.error("Error fetching game:", err);
-      }
-    };
-
-    fetchGame();
-  }, [tournament.gameId]);
-
-  return (
-    <li>
-      <p>
-        Name: {tournament.name} - Rules: {tournament.rules} - Max: {tournament.maxParticipants}
-        {" - Game: "}
-        {game ? game.name : "Loading..."}
-      </p>
-
-      {game?.background_image && (
-        <img
-          src={game.background_image}
-          alt={game.name}
-          width="200"
-        />
+        ))
       )}
-    </li>
-  );
+    </div>
+  </div>
+);
 }
 
-TournamentItem.propTypes = {
-  tournament: PropTypes.shape({
-    gameId: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-    rules: PropTypes.string.isRequired,
-    maxParticipants: PropTypes.number.isRequired,
-  }).isRequired,
-};
-
-export default Home
+export default Home;

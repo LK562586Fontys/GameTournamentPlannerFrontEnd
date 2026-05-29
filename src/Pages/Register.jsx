@@ -51,6 +51,7 @@ function Register() {
           <label htmlFor="name">Name</label>
 
           <input
+            data-testid="register-name"
             type="text"
             id="name"
             value={name}
@@ -62,6 +63,7 @@ function Register() {
           <label htmlFor="emailAddress">Email</label>
 
           <input
+            data-testid="register-email"
             type="email"
             id="emailAddress"
             value={emailAddress}
@@ -73,6 +75,7 @@ function Register() {
           <label htmlFor="password">Password</label>
 
           <input
+            data-testid="register-password"
             type="password"
             id="password"
             value={password}
@@ -80,10 +83,10 @@ function Register() {
           />
         </div>
 
-        <button type="submit">Register</button>
+        <button data-testid="register-submit" type="submit">Register</button>
       </form>
 
-      {message && <p>{message}</p>}
+      {message && <p data-testid="register-message">{message}</p>}
     </div>
   );
 }
