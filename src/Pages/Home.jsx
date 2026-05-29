@@ -6,11 +6,11 @@ import '../index.css';
 import {
   getTournaments,
   createTournament,
-} from '../services/tournamentService';
+} from '../Services/TournamentService';
 
-import { searchGames } from '../services/rawgService';
+import { searchGames } from '../Services/RAWGService';
 
-import { validateTournament } from '../validators/tournamentValidator';
+import { validateTournament } from '../Salidators/tournamentValidator';
 
 function Home() {
   const [tournaments, setTournaments] = useState([]);
