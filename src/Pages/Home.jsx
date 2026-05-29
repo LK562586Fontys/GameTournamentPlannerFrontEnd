@@ -10,7 +10,7 @@ import {
 
 import { searchGames } from '../Services/RAWGService';
 
-import { validateTournament } from '../Salidators/tournamentValidator';
+import { validateTournament } from '../Validators/tournamentValidator';
 
 function Home() {
   const [tournaments, setTournaments] = useState([]);
