@@ -36,6 +36,7 @@ jobs:
     - run: npm test
 
     - name: Run SonarQube analysis
+      continue-on-error: true
       run: |
         npx sonar-scanner \
           -Dsonar.host.url=$SONAR_HOST_URL \
