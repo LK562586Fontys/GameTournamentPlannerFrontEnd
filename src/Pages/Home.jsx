@@ -10,6 +10,8 @@ import {
 
 import { searchGames } from '../Services/RAWGService';
 
+import TournamentItem from '../Components/TournamentItem.jsx';
+
 import { validateTournament } from '../Validators/tournamentValidator';
 
 function Home() {
@@ -158,21 +160,22 @@ function Home() {
     </div>
 
     <div className="tournament-list">
-      <h2>Existing Tournaments</h2>
+  <h2>Existing Tournaments</h2>
 
-      {tournaments.length === 0 ? (
-        <p>No tournaments found.</p>
-      ) : (
-        tournaments.map((tournament) => (
+  {tournaments.length === 0 ? (
+      <p>No tournaments found.</p>
+    ) : (
+      <ul>
+        {tournaments.map((tournament) => (
           <TournamentItem
             key={tournament.id}
             tournament={tournament}
           />
-        ))
-      )}
-    </div>
+        ))}
+      </ul>
+    )}
   </div>
-);
+</div>
+  );
 }
-
 export default Home;

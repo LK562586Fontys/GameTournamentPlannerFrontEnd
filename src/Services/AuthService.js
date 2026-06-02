@@ -15,3 +15,34 @@ export async function registerUser(data) {
 
   return result;
 }
+
+export async function loginUser(data) {
+  const response = await fetch('http://localhost:8081/api/accounts/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.message || 'Login failed.');
+  }
+
+  return result;
+}
+
+export function getToken() {
+  return localStorage.getItem('token');
+}
+
+export function getCurrentUser() {
+  return JSON.parse(localStorage.getItem('user'));
+}
+
+export function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+}
