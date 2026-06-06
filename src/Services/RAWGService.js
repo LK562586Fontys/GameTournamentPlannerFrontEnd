@@ -1,4 +1,4 @@
-const API_KEY = '2e4d67e3eaea4cab87c6b089721bb288';
+const API_KEY = import.meta.env.VITE_RAWG_API_KEY;
 
 const BASE_URL = 'https://api.rawg.io/api/games';
 
