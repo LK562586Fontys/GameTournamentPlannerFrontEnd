@@ -28,9 +28,9 @@ function Login() {
 
     try {
       const result = await loginUser(formData);
-      // NOSONAR
+
       localStorage.setItem('token', result.token);
-      // NOSONAR
+
       localStorage.setItem('user', JSON.stringify({
         id: result.id,
         name: result.name,
