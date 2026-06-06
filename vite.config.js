@@ -9,6 +9,12 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
       reportsDirectory: 'coverage',
+      exclude: [
+      '**/*.test.*',
+      '**/*.spec.*',
+      '**/__tests__/**',
+      '**/node_modules/**',
+    ],
     },
     globals: true,
     environment: 'jsdom',
