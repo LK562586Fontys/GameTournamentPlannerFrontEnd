@@ -5,19 +5,21 @@ import react from '@vitejs/plugin-react-swc'
 export default defineConfig({
   plugins: [react()],
   test: {
+    globals: true,
+    environment: 'jsdom',
+
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
       reportsDirectory: 'coverage',
       exclude: [
-      '**/Tests/**',
+      'src/Tests/**',
+      '**/E2E/**',
       '**/*.test.*',
       '**/*.spec.*',
       '**/__tests__/**',
       '**/node_modules/**',
       ],
     },
-    globals: true,
-    environment: 'jsdom',
   },
 })
