@@ -27,24 +27,37 @@ function Login() {
     }
 
     try {
-        const result = await loginUser(formData);
+      const result = await loginUser(formData);
 
-        localStorage.setItem('token', result.token);
+      // Validate API response (prevents SonarQube taint warning)
+      if (
+        !result ||
+        typeof result.token !== 'string' ||
+        typeof result.id !== 'number' ||
+        typeof result.name !== 'string' ||
+        typeof result.emailAddress !== 'string'
+      ) {
+        throw new Error('Invalid server response');
+      }
 
-        localStorage.setItem(
-          'user',
-          JSON.stringify({
-           id: result.id,
-           name: result.name,
-            emailAddress: result.emailAddress,
-          })
-        );
+      // Basic sanitization
+      const safeUser = {
+        id: result.id,
+        name: result.name.trim().slice(0, 100),
+        emailAddress: result.emailAddress.trim().toLowerCase(),
+      };
 
-setMessage('Login successful!');
+      const safeToken = result.token.trim();
+
+      localStorage.setItem('token', safeToken);
+
+      localStorage.setItem('user', JSON.stringify(safeUser));
+
+      setMessage('Login successful!');
     } catch (error) {
-        setMessage(error.message);
+      setMessage(error.message || 'Login failed');
     }
-};
+  };
 
   return (
     <div>

@@ -8,7 +8,7 @@ export async function searchGames(query) {
   }
 
   const response = await fetch(
-    `${BASE_URL}?key=${API_KEY}&search=${query}`
+    `${BASE_URL}?key=${API_KEY}&search=${encodeURIComponent(query)}`
   );
 
   if (!response.ok) {
@@ -21,15 +21,19 @@ export async function searchGames(query) {
 }
 
 export async function getGameDetails(gameId) {
+  const id = Number(gameId);
+
+  if (!Number.isInteger(id) || id <= 0) {
+    throw new Error('Invalid game id.');
+  }
+
   const response = await fetch(
-    `${BASE_URL}/${gameId}?key=${API_KEY}`
+    `${BASE_URL}/${id}?key=${API_KEY}`
   );
 
   if (!response.ok) {
     throw new Error('Failed to get game details.');
   }
 
-  const data = await response.json();
-
-  return data;
+  return response.json();
 }
