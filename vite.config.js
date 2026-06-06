@@ -10,14 +10,15 @@ export default defineConfig({
 
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'lcov', 'html'],
-      reportsDirectory: 'coverage',
+      reporter: ['text', 'html', 'lcov'],
+      include: ['src/**/*.{js,jsx,ts,tsx}'],
       exclude: [
-        'e2e/**',
         'src/tests/**',
-        '**/*.test.{js,jsx,ts,tsx}',
-        '**/*.spec.{js,jsx,ts,tsx}',
+        'e2e/**',
+        '**/*.test.*',
+        '**/*.spec.*',
         '**/__tests__/**',
+        '**/node_modules/**',
       ],
     },
   },
