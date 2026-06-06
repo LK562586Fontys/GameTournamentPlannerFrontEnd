@@ -13,8 +13,8 @@ export default defineConfig({
       reporter: ['text', 'lcov', 'html'],
       reportsDirectory: 'coverage',
       exclude: [
-      'src/Tests/**',
-      '**/E2E/**',
+      'src/tests/**',
+      'e2e/**',
       '**/*.test.*',
       '**/*.spec.*',
       '**/__tests__/**',

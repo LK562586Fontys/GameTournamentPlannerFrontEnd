@@ -10,7 +10,7 @@ import { defineConfig, devices } from '@playwright/test';
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
-  testDir: './E2E',
+  testDir: './e2e',
   testMatch: /\.e2e\.js$/,
   /* Run tests in files in parallel */
   fullyParallel: true,
