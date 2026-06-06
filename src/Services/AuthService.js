@@ -30,8 +30,24 @@ export async function loginUser(data) {
   if (!response.ok) {
     throw new Error(result.message || 'Login failed.');
   }
+  
+  if (
+    !result ||
+    typeof result.token !== 'string' ||
+    typeof result.id !== 'number' ||
+    typeof result.name !== 'string' ||
+    typeof result.emailAddress !== 'string'
+  ) {
+    throw new Error('Invalid server response');
+  }
 
-  return result;
+  // Return ONLY trusted data (taint removed)
+  return {
+    token: result.token.trim(),
+    id: result.id,
+    name: result.name.trim().slice(0, 100),
+    emailAddress: result.emailAddress.trim().toLowerCase(),
+  };
 }
 
 export function getToken() {
