@@ -29,29 +29,13 @@ function Login() {
     try {
       const result = await loginUser(formData);
 
-      // Validate API response (prevents SonarQube taint warning)
-      if (
-        !result ||
-        typeof result.token !== 'string' ||
-        typeof result.id !== 'number' ||
-        typeof result.name !== 'string' ||
-        typeof result.emailAddress !== 'string'
-      ) {
-        throw new Error('Invalid server response');
-      }
+      localStorage.setItem('token', result.token);
 
-      // Basic sanitization
-      const safeUser = {
+      localStorage.setItem('user', JSON.stringify({
         id: result.id,
-        name: result.name.trim().slice(0, 100),
-        emailAddress: result.emailAddress.trim().toLowerCase(),
-      };
-
-      const safeToken = result.token.trim();
-
-      localStorage.setItem('token', safeToken);
-
-      localStorage.setItem('user', JSON.stringify(safeUser));
+        name: result.name,
+        emailAddress: result.emailAddress,
+      }));
 
       setMessage('Login successful!');
     } catch (error) {
