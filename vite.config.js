@@ -10,11 +10,12 @@ export default defineConfig({
       reporter: ['text', 'lcov', 'html'],
       reportsDirectory: 'coverage',
       exclude: [
+      '**/Tests/**',
       '**/*.test.*',
       '**/*.spec.*',
       '**/__tests__/**',
       '**/node_modules/**',
-    ],
+      ],
     },
     globals: true,
     environment: 'jsdom',
