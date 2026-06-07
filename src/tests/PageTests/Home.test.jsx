@@ -241,27 +241,27 @@ describe('Home page', () => {
 
     await user.type(
       screen.getByPlaceholderText('Tournament Name'),
-      'Summer Cup'
+      'Winter Cup'
     );
 
     await user.type(
       screen.getByPlaceholderText('Tournament Rules'),
-      'BO3'
+      'Dont cheat please!'
     );
 
     await user.type(
       screen.getByPlaceholderText('Max Participants'),
-      '16'
+      '32'
     );
 
     const searchInput = screen.getByPlaceholderText(
       'Search Game'
     );
 
-    await user.type(searchInput, 'Counter');
+    await user.type(searchInput, 'Team Fortress');
 
     const gameButton =
-      await screen.findByText('Counter-Strike 2');
+      await screen.findByText('Team Fortress 2');
 
     await user.click(gameButton);
 
