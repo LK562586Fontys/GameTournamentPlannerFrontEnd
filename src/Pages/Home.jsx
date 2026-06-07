@@ -99,7 +99,7 @@ function Home() {
     <h1>Tournaments</h1>
 
     <div className="create-tournament-container">
-      <h2>Create Tournament</h2>
+      <h2>Create A Tournament</h2>
 
       <input
         type="text"
