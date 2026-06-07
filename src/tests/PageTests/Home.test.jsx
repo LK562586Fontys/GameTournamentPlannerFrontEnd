@@ -226,9 +226,9 @@ describe('Home page', () => {
 
     searchGames.mockResolvedValue([
       {
-        id: 10,
-        name: 'Counter-Strike 2',
-      },
+        id: 20,
+        name: 'Team Fortress 2',
+      }
     ]);
 
     createTournament.mockRejectedValue(
