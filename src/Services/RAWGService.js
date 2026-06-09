@@ -1,6 +1,6 @@
 const API_KEY = import.meta.env.VITE_RAWG_API_KEY;
 
-const BASE_URL = import.meta.env.RAWG_API_URL;
+const BASE_URL = import.meta.env.VITE_RAWG_API_URL;
 
 export async function searchGames(query) {
   if (!query) {

@@ -38,6 +38,7 @@ function Login() {
       }));
 
       setMessage('Login successful!');
+      window.location.href = '/';
     } catch (error) {
       setMessage(error.message || 'Login failed');
     }
