@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../index.css';
 
-import { validateRegister } from '../Validators/registerValidator';
+import { validateRegister } from '../Validators/registerValidator.js';
 import { registerUser } from '../Services/AuthService';
 
 function Register() {
@@ -90,5 +90,6 @@ function Register() {
     </div>
   );
 }
+
 
 export default Register;
