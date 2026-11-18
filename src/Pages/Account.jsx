@@ -51,7 +51,7 @@ function Account() {
       }
     };
 
-    loadAccount();
+    void loadAccount();
   }, [user.id]);
 
   const handleProfileUpdate = async (e) => {

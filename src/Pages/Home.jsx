@@ -36,7 +36,7 @@ function Home() {
       }
     }
 
-    loadTournaments();
+    void loadTournaments();
   }, []);
 
   const handleGameSearch = async (query) => {
